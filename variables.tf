@@ -137,4 +137,4 @@ variable "public_key" {
   type        = string
   description = "Public key to be used to ssh into a machine"
   default     = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGWI9K1SR2jZ75LtFbbGJjoVbOlmSPs4Vwr4Xn7cQDM8 jaschluckbier@gmail.com"
-  }
+}
