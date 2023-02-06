@@ -20,8 +20,7 @@ locals {
     ipv4_address = var.ipv4_address,
     ipv4_gateway = var.ipv4_gateway,
     dns_server_1 = var.dns_server_list[0],
-    dns_server_2 = var.dns_server_list[1],
-    public_key = var.public_key,
+    public_key   = var.public_key,
     ssh_username = var.ssh_username
   }
 }
@@ -52,7 +51,8 @@ data "vsphere_virtual_machine" "template" {
 }
 
 resource "vsphere_virtual_machine" "vm" {
-  name             = var.name
+  count            = var.vm_count
+  name             = "${var.vm-name-prefix}-${count.index}"
   resource_pool_id = data.vsphere_compute_cluster.cluster.resource_pool_id
   datastore_id     = data.vsphere_datastore.datastore.id
 
@@ -64,6 +64,7 @@ resource "vsphere_virtual_machine" "vm" {
   network_interface {
     network_id   = data.vsphere_network.network.id
     adapter_type = data.vsphere_virtual_machine.template.network_interface_types[0]
+    
   }
 
   disk {
@@ -75,6 +76,17 @@ resource "vsphere_virtual_machine" "vm" {
 
   clone {
     template_uuid = data.vsphere_virtual_machine.template.id
+  
+    customize {
+      network_interfaces {
+        ipv4_address = "192.168.${count.index}.5"
+        ipv4_gateway = "192.168.${count.indes}.1"
+        ipv4_netmask = "24"
+      }
+    }
+  
+  
+  
   }
   extra_config = {
     "guestinfo.metadata"          = base64encode(templatefile("${path.module}/templates/metadata.yaml", local.templatevars))
@@ -82,12 +94,5 @@ resource "vsphere_virtual_machine" "vm" {
     "guestinfo.userdata"          = base64encode(templatefile("${path.module}/templates/userdata.yaml", local.templatevars))
     "guestinfo.userdata.encoding" = "base64"
   }
-  lifecycle {
-    ignore_changes = [
-      annotation,
-      clone[0].template_uuid,
-      clone[0].customize[0].dns_server_list,
-      clone[0].customize[0].network_interface[0]
-    ]
-  }
+
 }

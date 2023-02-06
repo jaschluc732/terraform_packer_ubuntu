@@ -54,7 +54,13 @@ variable "name" {
 variable "vm-name-prefix" {
   type        = string
   description = "Name of VM prefix"
-  default     =  "k3sup"
+  default     =  "vm-vrf-"
+}
+
+variable "vm_count" {
+   description = "Number of VM's"
+   default     = 3
+   type        = string 
 }
 
 variable "vm-datastore" {
@@ -111,7 +117,7 @@ variable "vm-domain" {
 variable "dns_server_list" {
   type = list(string)
   description = "List of DNS servers"
-  default = ["8.8.8.8", "8.8.4.4"]
+  default = ["8.8.8.8"]
 }
 
 variable "ipv4_address" {
