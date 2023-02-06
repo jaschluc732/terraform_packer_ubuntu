@@ -115,9 +115,9 @@ variable "vm-domain" {
 }
 
 variable "dns_server_list" {
-  type = list(string)
-  description = "List of DNS servers"
-  default = ["8.8.8.8"]
+  type = string
+  description = "DNS server"
+  default = "8.8.8.8"
 }
 
 variable "ipv4_address" {

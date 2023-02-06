@@ -8,6 +8,6 @@ vsphere-datacenter     = "NSX-T"
 vsphere-cluster        = "prod"
 vm-datastore           = "esxi1"
 vm-network             = "DPortGroup"
-dns_server_list        = ["8.8.8.8"]
+dns_server_list        = "8.8.8.8"
 name                   = "vm_vrf-"
 vm-template-name       = "Ubuntu-2204-Template-100GB-Thin"
