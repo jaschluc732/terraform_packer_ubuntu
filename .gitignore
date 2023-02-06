@@ -1,1 +1,10 @@
 ./*.tfstate
+terraform.*
+.terraform*
+variables.json
+.terraform.tfstate.lock.info
+# Cache objects
+packer_cache/
+# For built boxes
+*.box
+preseed*
