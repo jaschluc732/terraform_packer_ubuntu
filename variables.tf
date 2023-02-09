@@ -46,11 +46,6 @@ variable "vsphere-template-folder" {
 # VMware vSphere virtual machine #
 #================================#
 
-variable "name" {
-  type        = string
-  description = "The name of the vSphere virtual machines and the hostname of the machine"
-}
-
 variable "vm-name-prefix" {
   type        = string
   description = "Name of VM prefix"
@@ -59,7 +54,7 @@ variable "vm-name-prefix" {
 
 variable "vm_count" {
    description = "Number of VM's"
-   default     = 3
+   default     = "3"
    type        = string 
 }
 
@@ -114,10 +109,9 @@ variable "vm-domain" {
   default     = ""
 }
 
-variable "dns_server_list" {
+variable "dns_server" {
   type = string
   description = "DNS server"
-  default = "8.8.8.8"
 }
 
 variable "ipv4_address" {
@@ -131,12 +125,13 @@ variable "ipv4_gateway" {
 
 variable "ipv4_netmask" {
   type = string
+  default = "24"
 }
 
 variable "ssh_username" {
   type      = string
   sensitive = true
-  default   = "sam"
+  default   = "ubuntu"
 }
 
 variable "public_key" {

@@ -1,17 +1,17 @@
 #cloud-config
-local-hostname: ${name}
-instance-id: ubuntu-${name}
+local-hostname: "${var.vm-name-prefix}-${count.index}.${var.vm-domain}${count.index}.com"
+instance-id: "${var.vm-name-prefix}-${count.index}.${var.vm-domain}${count.index}.com"
 network:
   version: 2
   ethernets:
     ens192:
       dhcp4: false
       addresses:
-        - ${ipv4_address}/24
-      gateway4: ${ipv4_gateway}
+        - "${var.ipv4_address}.$[count.index].5/${var.ipv4_netmask}"
+      gateway4: "${var.ipv4_gateway}.$[count.index].1"
       nameservers:
-        search: [home]
-        addresses: [${dns_server_1}, ${dns_server_2}]
+        search: "${var.vm-domain}${count.index}.com"
+        addresses: ${dns_server}
 growpart:
   mode: auto
   devices: ['/dev/sda2']

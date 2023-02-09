@@ -14,12 +14,12 @@ provider "vsphere" {
   allow_unverified_ssl = true
 }
 
+# Feed simpler local variables into meta-date and user-date templates
 locals {
   templatevars = {
-    name         = var.name,
+    name         = var.vm-name-prefix,
     ipv4_address = var.ipv4_address,
     ipv4_gateway = var.ipv4_gateway,
-    dns_server_1 = var.dns_server_list[0],
     public_key   = var.public_key,
     ssh_username = var.ssh_username
   }
@@ -68,7 +68,7 @@ resource "vsphere_virtual_machine" "vm" {
   }
 
   disk {
-    label            = "${var.name}-disk"
+    label            = "${var.vm-name-prefix}disk"
     thin_provisioned = data.vsphere_virtual_machine.template.disks.0.thin_provisioned
     eagerly_scrub    = data.vsphere_virtual_machine.template.disks.0.eagerly_scrub
     size             = var.disksize == "" ? data.vsphere_virtual_machine.template.disks.0.size : var.disksize 
@@ -76,23 +76,18 @@ resource "vsphere_virtual_machine" "vm" {
 
   clone {
     template_uuid = data.vsphere_virtual_machine.template.id
-  
-    customize {
-      network_interfaces {
-        ipv4_address = "192.168.${count.index}.5"
-        ipv4_gateway = "192.168.${count.indes}.1"
-        ipv4_netmask = "24"
-      }
-    }
-  
-  
-  
   }
   extra_config = {
     "guestinfo.metadata"          = base64encode(templatefile("${path.module}/templates/metadata.yaml", local.templatevars))
     "guestinfo.metadata.encoding" = "base64"
     "guestinfo.userdata"          = base64encode(templatefile("${path.module}/templates/userdata.yaml", local.templatevars))
     "guestinfo.userdata.encoding" = "base64"
+  }
+  lifecycle {
+    ignore_changes = [
+      annotation,
+      clone[0].template_uuid
+    ]
   }
 
 }
